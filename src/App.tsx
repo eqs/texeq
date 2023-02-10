@@ -7,6 +7,8 @@ import { STATE } from "mathjax-full/js/core/MathItem";
 import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor'
 import { RegisterHTMLHandler } from 'mathjax-full/js/handlers/html'
 
+import TextareaAutosize from '@mui/base/TextareaAutosize';
+
 // https://github.com/mathjax/MathJax/issues/2385#issuecomment-1253051223
 
 const adaptor = liteAdaptor()
@@ -21,10 +23,12 @@ const tex_html = mathjax.document("", {
 
 const MathComponent = (props: { text: string }) => {
   const [state, setState] = useState<string>("");
+
   useEffect(() => {
     let result = tex_html.convert(props.text);
     setState(adaptor.innerHTML(result));
   }, [props]);
+
   return (
       <div>
         <img src={`data:image/svg+xml;utf8,${state}`} />
@@ -34,9 +38,23 @@ const MathComponent = (props: { text: string }) => {
 
 
 function App() {
+  const [textState, setTextState] = useState<string>("");
+
+  const handleTextInputChange = (event: any) => {
+    setTextState(event.target.value);
+  };
+
   return (
     <div className="App">
-      <MathComponent text='F(\omega) = \mathcal F[f(x)] = \int_{-\infty}^\infty f(x)e^{-i\omega x} \mathrm dx'/>
+      <TextareaAutosize
+        aria-label="empty textarea"
+        placeholder="Write equations here."
+        style={{ width: 400 }}
+        minRows={10}
+        value={textState}
+        onChange={handleTextInputChange}
+      />
+      <MathComponent text={textState}/>
     </div>
   );
 }
