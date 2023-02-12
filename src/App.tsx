@@ -3,7 +3,7 @@ import './App.css';
 import { mathjax } from 'mathjax-full/js/mathjax'
 import { TeX } from "mathjax-full/js/input/tex";
 import { SVG } from "mathjax-full/js/output/svg";
-import { STATE } from "mathjax-full/js/core/MathItem";
+// import { STATE } from "mathjax-full/js/core/MathItem";
 import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor'
 import { RegisterHTMLHandler } from 'mathjax-full/js/handlers/html'
 
