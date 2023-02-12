@@ -10,6 +10,7 @@ import { RegisterHTMLHandler } from 'mathjax-full/js/handlers/html'
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 import Button from '@mui/material/Button';
 import { Svg2Png } from 'svg2png-converter';
+import parse from 'html-react-parser';
 
 // https://github.com/mathjax/MathJax/issues/2385#issuecomment-1253051223
 
@@ -33,8 +34,8 @@ const MathComponent = (props: { text: string }) => {
   }, [props]);
 
   return (
-      <div>
-        <img src={`data:image/svg+xml;utf8,${state}`} id="mathCanvas" />
+      <div id="mathCanvas">
+        {parse(state)}
       </div>
   ); // `
 }
@@ -49,10 +50,14 @@ function App() {
   };
 
   const handleSavePngButtonPressed = (event: any) => {
-    const svgSelector = document.querySelector('img#mathCanvas') as SVGSVGElement;
-    const options = { scaleX: 1, scaleY: 1, embedCSS: true };
+    const svgSelector = document.querySelector('#mathCanvas > svg') as SVGSVGElement;
+    const options = { scaleX: 8, scaleY: 8, embedCSS: true };
     Svg2Png.toDataURL(svgSelector, options).then(url => {
-      console.log(url);
+      const a = document.createElement("a")
+      a.download = "equation.png";
+      a.href = url;
+      a.click();
+      a.remove();
     });
   };
 
