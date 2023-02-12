@@ -8,6 +8,9 @@ import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor'
 import { RegisterHTMLHandler } from 'mathjax-full/js/handlers/html'
 
 import TextareaAutosize from '@mui/base/TextareaAutosize';
+import Button from '@mui/material/Button';
+import { Svg2Png } from 'svg2png-converter';
+import parse from 'html-react-parser';
 
 // https://github.com/mathjax/MathJax/issues/2385#issuecomment-1253051223
 
@@ -25,23 +28,37 @@ const MathComponent = (props: { text: string }) => {
   const [state, setState] = useState<string>("");
 
   useEffect(() => {
-    let result = tex_html.convert(props.text);
-    setState(adaptor.innerHTML(result));
+    const result = tex_html.convert(props.text);
+    const svg = adaptor.innerHTML(result);
+    setState(svg);
   }, [props]);
 
   return (
-      <div>
-        <img src={`data:image/svg+xml;utf8,${state}`} />
+      <div id="mathCanvas">
+        {parse(state)}
       </div>
   ); // `
 }
 
+//        <img src={`data:image/svg+xml;utf8,${state}`} id="mathCanvas" />
 
 function App() {
   const [textState, setTextState] = useState<string>("");
 
   const handleTextInputChange = (event: any) => {
     setTextState(event.target.value);
+  };
+
+  const handleSavePngButtonPressed = (event: any) => {
+    const svgSelector = document.querySelector('#mathCanvas > svg') as SVGSVGElement;
+    const options = { scaleX: 8, scaleY: 8, embedCSS: true };
+    Svg2Png.toDataURL(svgSelector, options).then(url => {
+      const a = document.createElement("a")
+      a.download = "equation.png";
+      a.href = url;
+      a.click();
+      a.remove();
+    });
   };
 
   return (
@@ -55,6 +72,7 @@ function App() {
         onChange={handleTextInputChange}
       />
       <MathComponent text={textState}/>
+      <Button onClick={handleSavePngButtonPressed}>Save PNG</Button>
     </div>
   );
 }
