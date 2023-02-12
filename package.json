@@ -1,5 +1,6 @@
 {
   "name": "texeq",
+  "homepage": "https://eqs.github.io/texeq/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
