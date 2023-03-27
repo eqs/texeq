@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import { mathjax } from 'mathjax-full/js/mathjax'
+import { mathjax } from 'mathjax-full/js/mathjax';
 import { TeX } from "mathjax-full/js/input/tex";
 import { SVG } from "mathjax-full/js/output/svg";
 // import { STATE } from "mathjax-full/js/core/MathItem";
-import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor'
-import { RegisterHTMLHandler } from 'mathjax-full/js/handlers/html'
+import { AllPackages } from 'mathjax-full/js/input/tex/AllPackages';
+import { liteAdaptor } from 'mathjax-full/js/adaptors/liteAdaptor';
+import { RegisterHTMLHandler } from 'mathjax-full/js/handlers/html';
 
 import TextareaAutosize from '@mui/base/TextareaAutosize';
 import Button from '@mui/material/Button';
@@ -17,18 +18,31 @@ import parse from 'html-react-parser';
 const adaptor = liteAdaptor()
 RegisterHTMLHandler(adaptor)
 
-const tex = new TeX({ packages: ["base", "ams"] });
-const svg = new SVG({ fontCache: "none" });
+const formatError = (jax: any, err: any) => {
+  return jax.formatError(err);
+};
+
+const tex = new TeX({
+  packages: AllPackages,
+  formatError: formatError,
+});
+const svg = new SVG({ fontCache: "local" });
 const tex_html = mathjax.document("", {
   InputJax: tex,
   OutputJax: svg,
 });
 
+const mathjaxOptions = {
+  em: 16,
+  ex: 8,
+  containerWidth: 1280,
+};
+
 const MathComponent = (props: { text: string }) => {
   const [state, setState] = useState<string>("");
 
   useEffect(() => {
-    const result = tex_html.convert(props.text);
+    const result = tex_html.convert(props.text, mathjaxOptions);
     const svg = adaptor.innerHTML(result);
     setState(svg);
   }, [props]);
