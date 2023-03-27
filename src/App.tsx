@@ -18,16 +18,24 @@ import parse from 'html-react-parser';
 const adaptor = liteAdaptor()
 RegisterHTMLHandler(adaptor)
 
-const tex = new TeX({ packages: AllPackages });
+const formatError = (jax: any, err: any) => {
+  return jax.formatError(err);
+};
+
+const tex = new TeX({
+  packages: AllPackages,
+  formatError: formatError,
+});
 const svg = new SVG({ fontCache: "local" });
 const tex_html = mathjax.document("", {
   InputJax: tex,
   OutputJax: svg,
 });
+
 const mathjaxOptions = {
   em: 16,
   ex: 8,
-  containerwidth: 1280
+  containerWidth: 1280,
 };
 
 const MathComponent = (props: { text: string }) => {
