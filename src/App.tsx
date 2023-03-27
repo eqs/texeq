@@ -24,12 +24,17 @@ const tex_html = mathjax.document("", {
   InputJax: tex,
   OutputJax: svg,
 });
+const mathjaxOptions = {
+  em: 16,
+  ex: 8,
+  containerwidth: 1280
+};
 
 const MathComponent = (props: { text: string }) => {
   const [state, setState] = useState<string>("");
 
   useEffect(() => {
-    const result = tex_html.convert(props.text);
+    const result = tex_html.convert(props.text, mathjaxOptions);
     const svg = adaptor.innerHTML(result);
     setState(svg);
   }, [props]);
